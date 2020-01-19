@@ -1,0 +1,2 @@
+test目录中存储的是各个级别的测试文件数据
+测试结果.xlsx是通过MultiTextClassifyDemo.java测试出来的各个级别的数据的结果

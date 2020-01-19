@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 声明需要注册监控 -->
+    <dubbo:monitor protocol="registry" />
+
+    <!-- 提供方应用名称信息，这个相当于起一个名字，我们dubbo管理页面比较清晰是哪个应用暴露出来的 -->
+    <!-- owner:应用负责人，用于服务治理，请填写负责人公司邮箱前缀.可以不写 -->
+    <dubbo:application name="consumer_textclassifydubbo" owner="xiang.wang" />
+
+   <!-- address:注册中心服务器地址.使用zookeeper注册中心暴露服务地址 -->
+	<!-- check:注册中心不存在时，是否报错.默认是true.-->
+	<!-- register:是否向此注册中心注册服务，如果设为false，将只订阅，不注册.默认true -->
+	<!-- subscribe:是否向此注册中心订阅服务，如果设为false，将只注册，不订阅 .默认true-->
+	<!-- timeout: 注册中心请求超时时间(毫秒).默认5000-->
+	<!-- address="zookeeper://192.168.10.100:2181?backup=192.168.10.101:2181,192.168.10.102:2181,192.168.10.148:2181,192.168.10.149:2181"-->
+    <dubbo:registry 
+		address="zookeeper://192.168.0.101:2181"
+    	check="true" register="false" subscribe="true" timeout="1200000"></dubbo:registry>
+
+	<!-- check:启动时检查提供者是否存在，true报错，false忽略 -->
+    <dubbo:consumer check="true" timeout="180000"/>
+    
+    <!-- 生成远程服务代理，可以像使用本地bean一样使用demoService -->
+    <!-- loadbalance:负载均衡策略，可选值：random,roundrobin,leastactive，分别表示：随机，轮循，最少活跃调用 -->
+    <dubbo:reference id="TextClassifyService" interface="com.wenge.textclassify.service.TextClassifyService" 
+        check="true" owner="xiang.wang" version="1.0" group="analysis_group" loadbalance="leastactive" />
+
+</beans>
